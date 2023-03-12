@@ -3,8 +3,9 @@ import logging
 
 import matplotlib.pyplot
 import matplotlib.pyplot as plt
-import pandas as pd
-from numpy import sin, cos, pi, linspace, finfo
+from numpy import sin, cos, pi, linspace
+from utils.lazy_object import LazyObject
+
 
 logger = logging.getLogger(__name__)
 
@@ -64,21 +65,21 @@ def max_filling(diameter: float) -> float:
 
 def max_velocity():
     """
-    Maximum sewage flow velocity in the sewer [m/s].
+    Maximum stormwater flow velocity in the sewer [m/s].
 
     Return:
-         velocity (int): maximum sewage flow velocity in pipe [m].
+         velocity (int): maximum stormwater flow velocity in pipe [m].
     """
 
-    return 3
+    return 5
 
 
 def min_velocity():
     """
-    Minimum sewage flow velocity in the sewer [m/s].
+    Minimum stormwater flow velocity in the sewer [m/s].
 
     Return:
-         velocity (int): minimum sewage flow velocity in pipe [m].
+         velocity (int): minimum stormwater flow velocity in pipe [m].
     """
 
     return 0.7
@@ -193,21 +194,54 @@ def min_slope(filling: float, diameter: float, theta: float = 1.5, g: float = 9.
     Return:
         slope (int, float): The minimum slope of the channel [‰]
     """
-    return 4 * (theta / g) * ((diameter / 4) / calc_rh(filling, diameter)) * (1 / diameter)
+    if check_dimensions(filling, diameter):
+        return 4 * (theta / g) * ((diameter / 4) / calc_rh(filling, diameter)) * (1 / diameter)
 
 
 def max_slope(diameter: float) -> float:
-    slope = min_slope(diameter, diameter)
-    v_max = max_velocity()
-    v_clc = calc_velocity(diameter, diameter, slope)
-    while v_clc < v_max:
-        slope += 0.01
-        v_clc = calc_velocity(diameter, diameter, slope)
-        print(v_clc)
-    return f"slope: {slope:.2f}, v_clc: {v_clc:.2f}, v_max: {v_max:.2f}"
+    """
+    Calculates the maximum slope for a given pipe diameter.
+
+    The function starts with an initial slope based on the diameter, and then iteratively
+    adjusts the slope until the calculated velocity matches the maximum velocity for the
+    pipeline.
+
+    Args:
+        diameter (int, float): pipe diameter [m].
+
+    Returns:
+        float: The maximum slope that can be achieved for the pipe.
+    """
+    if check_dimensions(diameter, diameter):
+        start_slope = min_slope(diameter, diameter)
+        slope = start_slope
+        v_max = max_velocity()
+        v_clc = 0
+        while round(v_clc, 2) != float(v_max):
+            v_clc = calc_velocity(diameter, diameter, slope)
+            if v_clc < v_max:
+                slope += start_slope
+            else:
+                start_slope = start_slope / 2
+                slope -= start_slope
+        return slope
 
 
-print(max_slope(0.5))
+max_slopes = LazyObject(lambda: {
+    "0.2": max_slope(0.2),
+    "0.3": max_slope(0.3),
+    "0.4": max_slope(0.4),
+    "0.5": max_slope(0.5),
+    "0.6": max_slope(0.6),
+    "0.7": max_slope(0.7),
+    "0.8": max_slope(0.8),
+    "0.9": max_slope(0.9),
+    "1.0": max_slope(1.0),
+    "1.2": max_slope(1.2),
+    "1.5": max_slope(1.5),
+    "2.0": max_slope(2.0),
+})
+
 
 def draw_pipe_section(filling: float, diameter: float, max_filling: float = None) -> matplotlib.pyplot:
     """

@@ -4,9 +4,11 @@ from pipes import valid_round
 
 
 class TestMaxFilling:
-
     def test_max_filling_valid_values(self):
-        for val, dia in zip([0.165, 0.248, 0.331, 0.414, 0.496, 0.579, 0.662, 0.744, 0.827], np.arange(0.2, 1, 0.1)):
+        for val, dia in zip(
+            [0.165, 0.248, 0.331, 0.414, 0.496, 0.579, 0.662, 0.744, 0.827],
+            np.arange(0.2, 1, 0.1),
+        ):
             assert pytest.approx(val) == round(valid_round.max_filling(dia), 3)
 
     def test_max_filling_min_diameter(self):
