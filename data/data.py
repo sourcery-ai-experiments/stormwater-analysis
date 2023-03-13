@@ -14,11 +14,12 @@ np.set_printoptions(linewidth=desired_width)
 pd.set_option("display.max_columns", 30)
 
 
-model = sw.Model(TEST_FILE, include_rpt=True)
+# model = sw.Model(TEST_FILE, include_rpt=True)
 
 # with pyswmm.Simulation(model.inp.path) as sim:
 #     for _ in sim:
 #         pass
+
 
 class ConduitsData:
 
@@ -44,18 +45,8 @@ class ConduitsData:
         self.conduits["ValMinV"] = self.conduits.apply(lambda df: validate_min_velocity(float(df.MaxV)), axis=1).astype(int)
 
     def slope_per_mile(self):
-        self.conduits["SlopePerMile"] = self.conduits["SlopeFtPerFt"] * 1000
+        self.conduits["SlopePerMile"] = self.conduits.SlopeFtPerFt * 1000
 
     def slopes_is_valid(self):
         self.conduits["ValMaxSlope"] = self.conduits.apply(lambda df: validate_max_slope(slope=df.SlopeFtPerFt * 1000, diameter=df.Geom1), axis=1).astype(int)
         self.conduits["ValMinSlope"] = self.conduits.apply(lambda df: validate_min_slope(slope=df.SlopeFtPerFt * 1000, filling=df.Filling, diameter=df.Geom1), axis=1).astype(int)
-
-
-o = ConduitsData(model)
-o.drop_unused()
-o.calculate_conduit_filling()
-o.filling_is_valid()
-o.velocity_is_valid()
-o.slope_per_mile()
-o.slopes_is_valid()
-print(o.conduits)

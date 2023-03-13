@@ -1,8 +1,4 @@
-import math
 import logging
-import matplotlib.pyplot as plt
-import pandas as pd
-from numpy import sin, cos, pi, linspace
 from pipes.round import (max_filling, max_velocity, min_velocity, min_slope, max_slopes)
 
 logger = logging.getLogger(__name__)
