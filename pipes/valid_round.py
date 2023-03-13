@@ -1,5 +1,6 @@
 import logging
-from pipes.round import (max_filling, max_velocity, min_velocity, min_slope, max_slopes)
+from pipes.round import (max_filling, max_velocity, min_velocity, min_slope, max_slopes,
+                         max_velocity_value, min_velocity_value)
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ def validate_max_velocity(velocity: float) -> bool:
     Return:
         bool: given velocity value is lower than the maximum velocity.
     """
-    return velocity <= max_velocity()
+    return velocity <= max_velocity_value
 
 
 def validate_min_velocity(velocity: float) -> bool:
@@ -45,7 +46,7 @@ def validate_min_velocity(velocity: float) -> bool:
     Return:
         bool: given velocity value is higher than the minimum velocity.
     """
-    return velocity >= min_velocity()
+    return velocity >= min_velocity_value
 
 
 def validate_min_slope(slope: float, filling: float, diameter: float, theta: float = 1.5, g: float = 9.81) -> bool:

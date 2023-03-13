@@ -2,10 +2,10 @@ import pytest
 import numpy as np
 
 from pipes.valid_round import (validate_filling, validate_max_velocity, validate_min_velocity,
-                               validate_max_slope, validate_min_slope)
+                               validate_max_slope, validate_min_slope, max_velocity_value, min_velocity_value)
 
 
-class TestMaxFilling:
+class TestValidateMaxFilling:
 
     def test_max_filling_valid_values(self):
         for fill, dia in zip(
@@ -39,6 +39,57 @@ class TestMaxFilling:
         for val in ["", "four", [], {}]:
             with pytest.raises(TypeError):
                 validate_filling(val, 1)  # type: ignore
+
+
+class TestValidateMaxVelocity:
+
+    def test_velocity_below_max_velocity(self):
+        assert validate_max_velocity(3.0)
+
+    def test_velocity_equal_to_max_velocity(self):
+        assert validate_max_velocity(5.0)
+
+    def test_velocity_above_max_velocity(self):
+        assert not validate_max_velocity(15.0)
+
+    def test_velocity_is_float(self):
+        with pytest.raises(TypeError):
+            validate_max_velocity('10.0')  # type: ignore
+
+    def test_velocity_is_not_none(self):
+        with pytest.raises(TypeError):
+            validate_max_velocity(None)  # type: ignore
+
+
+class TestValidateMinVelocity:
+
+    def test_validate_min_velocity_equals_minimum_velocity(self):
+        assert validate_min_velocity(0.7)
+
+    def test_validate_min_velocity_below_minimum_velocity(self):
+        assert not validate_min_velocity(0.6)
+
+    def test_validate_min_velocity_above_minimum_velocity(self):
+        assert validate_min_velocity(0.8)
+
+    def test_validate_min_velocity_negative_velocity(self):
+        assert not validate_min_velocity(-0.7)
+
+    def test_validate_min_velocity_zero(self):
+        assert not validate_min_velocity(0)
+
+    def test_validate_min_velocity_maximum_velocity(self):
+        assert validate_min_velocity(max_velocity_value)
+
+    def test_validate_min_velocity_slightly_above_minimum_velocity(self):
+        assert validate_min_velocity(0.701)
+
+    def test_validate_min_velocity_slightly_bellow_minimum_velocity(self):
+        assert not validate_min_velocity(0.699)
+
+    def test_validate_min_velocity_string_value(self):
+        with pytest.raises(TypeError):
+            validate_min_velocity('10.0')  # type: ignore
 
 
 class TestValidateMinSlope:

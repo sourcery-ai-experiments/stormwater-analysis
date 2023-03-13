@@ -70,7 +70,6 @@ def max_velocity():
     Return:
          velocity (int): maximum stormwater flow velocity in pipe [m].
     """
-
     return 5
 
 
@@ -227,22 +226,6 @@ def max_slope(diameter: float) -> float:
         return slope
 
 
-max_slopes = LazyObject(lambda: {
-    "0.2": max_slope(0.2),
-    "0.3": max_slope(0.3),
-    "0.4": max_slope(0.4),
-    "0.5": max_slope(0.5),
-    "0.6": max_slope(0.6),
-    "0.7": max_slope(0.7),
-    "0.8": max_slope(0.8),
-    "0.9": max_slope(0.9),
-    "1.0": max_slope(1.0),
-    "1.2": max_slope(1.2),
-    "1.5": max_slope(1.5),
-    "2.0": max_slope(2.0),
-})
-
-
 def draw_pipe_section(filling: float, diameter: float, max_filling: float = None) -> matplotlib.pyplot:
     """
     Plot a pipe section with a given diameter and filling height.
@@ -330,3 +313,24 @@ def draw_pipe_section(filling: float, diameter: float, max_filling: float = None
     plt.grid(True)
     plt.legend(loc="upper left")
     plt.show()
+
+
+max_slopes = LazyObject(lambda: {
+    "0.2": max_slope(0.2),
+    "0.3": max_slope(0.3),
+    "0.4": max_slope(0.4),
+    "0.5": max_slope(0.5),
+    "0.6": max_slope(0.6),
+    "0.7": max_slope(0.7),
+    "0.8": max_slope(0.8),
+    "0.9": max_slope(0.9),
+    "1.0": max_slope(1.0),
+    "1.2": max_slope(1.2),
+    "1.5": max_slope(1.5),
+    "2.0": max_slope(2.0),
+})
+
+
+max_velocity_value = max_velocity()
+
+min_velocity_value = min_velocity()
