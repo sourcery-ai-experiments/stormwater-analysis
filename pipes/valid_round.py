@@ -1,5 +1,5 @@
 import logging
-from pipes.round import (max_filling, max_velocity, min_velocity, min_slope, max_slopes,
+from pipes.round import (check_dimensions, max_filling, max_velocity, min_velocity, min_slope, max_slopes,
                          max_velocity_value, min_velocity_value)
 
 logger = logging.getLogger(__name__)
@@ -49,6 +49,27 @@ def validate_min_velocity(velocity: float) -> bool:
     return velocity >= min_velocity_value
 
 
+def check_slope(slope: float) -> bool:
+    """
+    Check passed value for slope.
+
+    Args:
+        slope (float): the slope of a pipe.
+
+    Returns:
+        bool: True if the slope is positive, False otherwise.
+
+    Raises:
+        TypeError: if slope is not a float or int.
+        ValueError: if slope is not positive.
+    """
+    if not isinstance(slope, (int, float)):
+        raise TypeError(f"slope must be a float or int, not {type(slope)}")
+    if slope <= 0:
+        raise ValueError(f"slope must be positive, not {slope}")
+    return True
+
+
 def validate_min_slope(slope: float, filling: float, diameter: float, theta: float = 1.5, g: float = 9.81) -> bool:
     """
     Check that the minimum slope is not exceeded.
@@ -74,4 +95,6 @@ def validate_max_slope(slope: float, diameter: float) -> bool:
     """
     Check that the maximum slope is not exceeded.
     """
-    return slope <= max_slopes.get(str(diameter))
+    if check_slope(slope) and check_dimensions(diameter, diameter):
+        return slope <= max_slopes.get(str(diameter))
+    return False
