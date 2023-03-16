@@ -1,6 +1,5 @@
 import logging
-from pipes.round import (check_dimensions, max_filling, max_velocity, min_velocity, min_slope, max_slopes,
-                         max_velocity_value, min_velocity_value)
+from pipes.round import (check_dimensions, max_filling, min_slope, max_slopes, max_velocity_value, min_velocity_value)
 
 logger = logging.getLogger(__name__)
 
