@@ -3,7 +3,7 @@ import numpy as np
 import swmmio as sw
 import pyswmm
 
-from pipes.valid_round import (validate_filling, validate_max_velocity, validate_min_velocity, validate_max_slope, validate_min_slope)
+from pipes.valid_round import (validate_filling, validate_max_velocity, validate_min_velocity, validate_max_slope, validate_min_slope, max_depth_value)
 
 from inp_manager.test_inp import TEST_FILE, RPT_TEST_FILE
 
@@ -106,5 +106,18 @@ class ConduitsData:
         self.conduits['InletMaxDepth'] = self.conduits['InletNode'].map(self.model.nodes.dataframe['MaxDepth'])
         self.conduits['OutletMaxDepth'] = self.conduits['OutletNode'].map(self.model.nodes.dataframe['MaxDepth'])
 
+    def calculate_max_depth(self):
+        nan_rows = pd.isna(self.conduits.OutletMaxDepth)
+        self.conduits.loc[nan_rows, 'OutletMaxDepth'] = self.conduits.loc[nan_rows, 'InletMaxDepth'] - (
+                self.conduits.loc[nan_rows, 'Length'] * self.conduits.loc[nan_rows, 'SlopeFtPerFt'])
+
+    def inlet_ground_cover(self):
+        self.conduits['InletGroundCover'] = self.conduits.InletNodeInvert - self.conduits.InletMaxDepth
+        self.conduits['OutletGroundCover'] = self.conduits.OutletNodeInvert - self.conduits.OutletMaxDepth
+
     def depth_is_valid(self):
-        pass
+        self.conduits["ValDepth"] = ((max_depth_value >= self.conduits.InletGroundCover) & (
+                    self.conduits.InletGroundCover >= self.frost_zone) & (
+                                                 max_depth_value <= self.conduits.OutletGroundCover) & (
+                                                 self.conduits.OutletGroundCover >= self.frost_zone)).astype(int)
+

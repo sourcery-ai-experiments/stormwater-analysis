@@ -80,8 +80,17 @@ def min_velocity():
     Return:
          velocity (int): minimum stormwater flow velocity in pipe [m].
     """
-
     return 0.7
+
+
+def max_depth():
+    """
+    The maximum depth of the sewer pipe [m].
+
+    Return:
+         depth (int): maximum depth of the sewer pipe [m].
+    """
+    return 8
 
 
 def calc_f(filling: float, diameter: float) -> float:
@@ -334,3 +343,5 @@ max_slopes = LazyObject(lambda: {
 max_velocity_value = max_velocity()
 
 min_velocity_value = min_velocity()
+
+max_depth_value = max_depth()
