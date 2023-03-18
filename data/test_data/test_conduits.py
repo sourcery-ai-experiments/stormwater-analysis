@@ -240,3 +240,127 @@ class TestConduitsData:
         for category, expected_value in zip(mixed_case_categories, expected_values):
             conduits_data.set_frost_zone(category)
             assert conduits_data.frost_zone == pytest.approx(expected_value, abs=1e-9)
+
+    def test_calculate_max_depth(self, conduits_data):
+        """
+        Test the 'calculate_max_depth' method of the ConduitsData class to ensure that it correctly
+        calculates the maximum depth of each conduit's outlet, based on its inlet depth, length, and slope.
+        """
+        conduits_data.max_depth()
+        conduits_data.conduits.at[0, "InletMaxDepth"] = 10
+        conduits_data.conduits.at[0, "Length"] = 100
+        conduits_data.conduits.at[0, "SlopeFtPerFt"] = 0.01
+        conduits_data.conduits.at[0, "OutletMaxDepth"] = 5
+
+        conduits_data.conduits.at[1, "InletMaxDepth"] = 20
+        conduits_data.conduits.at[1, "Length"] = 200
+        conduits_data.conduits.at[1, "SlopeFtPerFt"] = 0.02
+        conduits_data.conduits.at[1, "OutletMaxDepth"] = 10
+        conduits_data.calculate_max_depth()
+        assert conduits_data.conduits["OutletMaxDepth"].loc[0] == 5
+        assert conduits_data.conduits["OutletMaxDepth"].loc[1] == 10
+        conduits_data.conduits = conduits_data.conduits.drop(index=[0, 1])
+
+    def test_calculate_maximum_depth(self, conduits_data):
+        """
+        Test the 'calculate_max_depth' method of the ConduitsData class to ensure that it correctly
+        calculates the maximum depth of each conduit's outlet, based on its inlet depth, length, and slope.
+        """
+        conduits_data.max_depth()
+        # Set up some test data
+        test_data = [
+            {"InletMaxDepth": 10, "Length": 100, "SlopeFtPerFt": 0.01, "OutletMaxDepth": np.nan},
+            {"InletMaxDepth": 20, "Length": 200, "SlopeFtPerFt": 0.02, "OutletMaxDepth": np.nan},
+            {"InletMaxDepth": 30, "Length": 300, "SlopeFtPerFt": 0.03, "OutletMaxDepth": np.nan},
+        ]
+        conduits_data.conduits = pd.DataFrame(test_data)
+        conduits_data.calculate_max_depth()
+
+        assert all(~pd.isna(conduits_data.conduits["OutletMaxDepth"]))
+        assert conduits_data.conduits.loc[0, "OutletMaxDepth"] == pytest.approx(9, abs=1e-9)
+        assert conduits_data.conduits.loc[1, "OutletMaxDepth"] == pytest.approx(16, abs=1e-9)
+        assert conduits_data.conduits.loc[2, "OutletMaxDepth"] == pytest.approx(21, abs=1e-9)
+
+    def test_inlet_ground_cover(self, conduits_data):
+        """
+        Test the 'inlet_ground_cover' method of the ConduitsData class to ensure that it correctly
+        calculates the amount of ground cover over each conduit's inlet and outlet.
+        """
+        print("\n")
+        conduits_data.max_depth()
+        test_data = [
+            {"InletNodeInvert": 10, "InletMaxDepth": 2, "InletGroundCover": 2, "OutletNodeInvert": 40, "OutletMaxDepth": 8, "OutletGroundCover": 2},
+            {"InletNodeInvert": 20, "InletMaxDepth": 4, "InletGroundCover": 2, "OutletNodeInvert": 50, "OutletMaxDepth": 10, "OutletGroundCover": 2},
+            {"InletNodeInvert": 30, "InletMaxDepth": 6, "InletGroundCover": 2, "OutletNodeInvert": 60, "OutletMaxDepth": 12, "OutletGroundCover": 2},
+        ]
+        conduits_data.conduits = pd.DataFrame(test_data)
+
+        # Calculate the inlet ground cover
+        conduits_data.inlet_ground_cover()
+        print(conduits_data.conduits)
+        # Check the results
+        assert all(~pd.isna(conduits_data.conduits["InletGroundCover"]))
+        assert conduits_data.conduits.loc[0, "InletGroundCover"] == pytest.approx(8, abs=1e-9)
+        assert conduits_data.conduits.loc[1, "InletGroundCover"] == pytest.approx(16, abs=1e-9)
+        assert conduits_data.conduits.loc[2, "InletGroundCover"] == pytest.approx(24, abs=1e-9)
+
+        # Check the results
+        assert all(~pd.isna(conduits_data.conduits["OutletGroundCover"]))
+        assert conduits_data.conduits.loc[0, "OutletGroundCover"] == pytest.approx(32, abs=1e-9)
+        assert conduits_data.conduits.loc[1, "OutletGroundCover"] == pytest.approx(40, abs=1e-9)
+        assert conduits_data.conduits.loc[2, "OutletGroundCover"] == pytest.approx(48, abs=1e-9)
+
+    def test_depth_is_valid(self, conduits_data):
+        """
+        Test the 'depth_is_valid' method of the ConduitsData class to ensure that it correctly
+        identifies which conduits have valid depths.
+        """
+        conduits_data.max_depth()
+        conduits_data.inlet_ground_cover()
+        conduits_data.conduits.at[0, "InletNodeInvert"] = 10
+        conduits_data.conduits.at[0, "OutletNodeInvert"] = 7
+        conduits_data.conduits.at[0, "ValDepth"] = np.nan
+        conduits_data.conduits.at[0, "InletGroundCover"] = 6
+        conduits_data.conduits.at[0, "OutletGroundCover"] = 0
+
+        conduits_data.conduits.at[1, "InletNodeInvert"] = 10
+        conduits_data.conduits.at[1, "OutletNodeInvert"] = 5
+        conduits_data.conduits.at[1, "ValDepth"] = np.nan
+        conduits_data.conduits.at[1, "InletGroundCover"] = 5
+        conduits_data.conduits.at[1, "OutletGroundCover"] = 5
+
+        conduits_data.conduits.at[2, "InletNodeInvert"] = 10
+        conduits_data.conduits.at[2, "OutletNodeInvert"] = 20
+        conduits_data.conduits.at[2, "ValDepth"] = np.nan
+        conduits_data.conduits.at[2, "InletGroundCover"] = 0
+        conduits_data.conduits.at[2, "OutletGroundCover"] = 0
+
+        conduits_data.depth_is_valid()
+        print("\n")
+        print(conduits_data.conduits)
+        assert conduits_data.conduits["ValDepth"].loc[0] == 1
+        assert conduits_data.conduits["ValDepth"].loc[1] == 1
+        assert conduits_data.conduits["ValDepth"].loc[2] == 0
+
+    def test_coverage_is_valid(self, conduits_data):
+        """
+        Test the 'coverage_is_valid' method of the ConduitsData class to ensure that it correctly
+        checks if the ground cover over each conduit's inlet and outlet is valid.
+        """
+        # Set up some test data
+        test_data = [
+            {"InletNodeInvert": 10, "OutletNodeInvert": 20, "InletGroundCover": 5, "OutletGroundCover": 15},
+            {"InletNodeInvert": 5, "OutletNodeInvert": 2, "InletGroundCover": 4, "OutletGroundCover": 1},
+            {"InletNodeInvert": 30, "OutletNodeInvert": 40, "InletGroundCover": 15, "OutletGroundCover": 25},
+        ]
+        conduits_data.conduits = pd.DataFrame(test_data)
+        conduits_data.frost_zone = 1.0
+
+        conduits_data.coverage_is_valid()
+
+        assert all(conduits_data.conduits["ValCoverage"] == 1)
+        conduits_data.conduits.at[1, "InletGroundCover"] = 15
+        conduits_data.coverage_is_valid()
+        assert conduits_data.conduits.loc[0, "ValCoverage"] == 1
+        assert conduits_data.conduits.loc[1, "ValCoverage"] == 0
+        assert conduits_data.conduits.loc[2, "ValCoverage"] == 1

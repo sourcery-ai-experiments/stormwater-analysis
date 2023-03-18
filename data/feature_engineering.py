@@ -9,20 +9,19 @@ from inp_manager.test_inp import TEST_FILE
 #          pass
 
 
-o = ConduitsData(model)
-o.set_frost_zone("II")
-o.drop_unused()
-o.calculate_conduit_filling()
-o.filling_is_valid()
-o.velocity_is_valid()
-o.slope_per_mile()
-o.slopes_is_valid()
-o.max_depth()
-o.calculate_max_depth()
-o.inlet_ground_cover()
-o.depth_is_valid()
+if __name__ == "__main__":
+    conduits_data = ConduitsData(model)
+    conduits_data.set_frost_zone("II")\
+        .drop_unused() \
+        .calculate_conduit_filling() \
+        .filling_is_valid() \
+        .velocity_is_valid() \
+        .slope_per_mile() \
+        .slopes_is_valid() \
+        .max_depth() \
+        .calculate_max_depth() \
+        .inlet_ground_cover() \
+        .depth_is_valid() \
+        .coverage_is_valid()
 
-print(o.conduits)
-
-# print("\n")
-# print(model.nodes.dataframe)
+    print(conduits_data.conduits)
