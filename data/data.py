@@ -248,7 +248,7 @@ class ConduitsData(Data):
 class NodeData(Data):
     def __init__(self, model: sw.Model) -> None:
         super().__init__(model)
-        self.nodes = model.nodes().copy()
+        self.nodes = model.nodes.dataframe.copy()
         self.frost_zone = None
 
     def set_frost_zone(self, frost_zone: str) -> None:
@@ -277,6 +277,41 @@ class NodeData(Data):
         Drops unused columns from the nodes dataframe.
         """
         self.nodes = self.nodes.drop(
+            columns=[
+                #
+            ]
+        )
+
+
+class SubcatchmentData(Data):
+    """
+    Data class for subcatchments.
+    """
+    def __init__(self, model: sw.Model) -> None:
+        super().__init__(model)
+        self.subcatchments = model.subcatchments.dataframe.copy()
+        self.frost_zone = None
+
+    def set_frost_zone(self, frost_zone: str) -> None:
+        """
+        Sets the frost zone value for the SubcatchmentData instance.
+
+        Args:
+            frost_zone (str): A string representing the frost zone category, e.g., "I", "II", "III", "IV".
+        """
+        categories = {
+            "I": 1,
+            "II": 1.2,
+            "III": 1.4,
+            "IV": 1.6,
+        }
+        self.frost_zone = categories.get(frost_zone.upper(), 1.2)
+
+    def drop_unused(self) -> None:
+        """
+        Drops unused columns from the subcatchments dataframe.
+        """
+        self.subcatchments = self.subcatchments.drop(
             columns=[
                 #
             ]
