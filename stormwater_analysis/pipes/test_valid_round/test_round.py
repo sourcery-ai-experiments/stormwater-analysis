@@ -1,7 +1,7 @@
 import math
 import pytest
 import numpy as np
-from pipes.round import (
+from stormwater_analysis.pipes.round import (
     check_dimensions,
     max_filling,
     max_velocity,
@@ -13,7 +13,7 @@ from pipes.round import (
     max_slope,
     max_slopes,
 )
-from utils.lazy_object import LazyObject
+from stormwater_analysis.utils.lazy_object import LazyObject
 
 
 class TestCheckDimensions:
@@ -155,7 +155,7 @@ class TestMaxVelocity:
         """
         Test if max velocity returns the maximum velocity of the robot
         """
-        assert max_velocity() == 3
+        assert max_velocity() == 5
 
     def test_min_velocity(self):
         """

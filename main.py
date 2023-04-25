@@ -5,9 +5,9 @@ import pandas as pd
 import numpy as np
 import pprint
 
-from inp_manager.inp import SwmmModel
-from inp_manager.test_inp import TEST_FILE, RPT_TEST_FILE
-from data.feature_engineering import feature_engineering
+from stormwater_analysis.inp_manager.inp import SwmmModel
+from stormwater_analysis.inp_manager.test_inp import TEST_FILE, RPT_TEST_FILE
+from stormwater_analysis.data.feature_engineering import feature_engineering
 
 desired_width = 500
 pd.set_option("display.width", desired_width)

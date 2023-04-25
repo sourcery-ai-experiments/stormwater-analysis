@@ -275,6 +275,28 @@ class NodeData(Data):
                 #
             ]
         )
+    # TODO calculate MAxDepth for outlets
+    # def max_depth(self):
+    #     self.nodes["MaxDepth"] = self.conduits["InletNode"].map(
+    #         self.model.nodes.dataframe["MaxDepth"]
+    #     )
+
+    # def calculate_max_depth(self):
+    #     """
+    #     Calculates the maximum depth of each conduit's outlet, based on its inlet depth, length, and slope.
+    #
+    #     First identifies any rows in the 'OutletMaxDepth' column of the 'conduits' dataframe that contain NaN values.
+    #     For those rows, it calculates the outlet depth by subtracting the product of the conduit's length and slope
+    #     from the inlet depth. The resulting values are then written to the 'OutletMaxDepth' column for those rows.
+    #     """
+    #     nan_rows = pd.isna(self.nodes.OutletMaxDepth)
+    #     self.nodes.loc[nan_rows, "OutletMaxDepth"] = self.conduits.loc[
+    #         nan_rows, "InletMaxDepth"
+    #     ] - (
+    #         self.nodes.loc[nan_rows, "Length"]
+    #         * self.nodes.loc[nan_rows, "SlopeFtPerFt"]
+    #     )
+
 
 
 class SubcatchmentData(Data):
