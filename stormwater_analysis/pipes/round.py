@@ -253,8 +253,9 @@ def draw_pipe_section(
     Args:
         filling (int, float): pipe filling height [m]
         diameter (int, float): pipe diameter [m]
-        max_filling (int, flow): The maximum filling of the pipe. If the pipe is filled above this level,
-            the wetted part of the pipe will be drawn in red
+        max_filling (int, flow): The maximum filling of the pipe.
+        If the pipe is filled above this level, the wetted part
+        of the pipe will be drawn in red
     """
     if max_filling is None:
         max_filling = diameter
