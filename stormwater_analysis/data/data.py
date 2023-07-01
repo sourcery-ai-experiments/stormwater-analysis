@@ -54,6 +54,7 @@ class ConduitsData(Data):
         super().__init__(model)
         self.conduits = model.conduits().copy()
         self.frost_zone = None
+        self.conduits.set_index("Name", inplace=True)
 
     def set_frost_zone(self, frost_zone: str) -> None:
         """

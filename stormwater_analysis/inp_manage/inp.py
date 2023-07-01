@@ -1,5 +1,6 @@
 from typing import Dict, List
 
+import pandas as pd
 import swmmio
 from swmmio.utils.functions import trace_from_node
 
@@ -39,7 +40,7 @@ class SwmmModel:
         self.nodes_data = nodes_data
         self.subcatchments_data = subcatchments_data
 
-    def find_all_traces(self) -> Dict[str, List[str]]:
+    def all_traces(self) -> Dict[str, List[str]]:
         """
         Finds all traces in the SWMM model.
 
@@ -52,34 +53,61 @@ class SwmmModel:
         outfalls = self.model.inp.outfalls.index
         return {outfall: trace_from_node(self.conduits_data.conduits, outfall) for outfall in outfalls}
 
-    def find_overflowing_pipes(self) -> Dict[str, List[str]]:
+    def overflowing_pipes(self) -> pd.DataFrame:
         """
-        Finds all overflowing pipes in the SWMM model.
-        
-        1. Określić na których kanałach sieć jest przepełniona.
-            * Zwróć liste kanałów, które są w koleumnie conduits['ValMaxFill'] == 0 
-        2. Zwrócić lista kanałów, które są przepełnione.
-            * zwrócić trasę kanałów, które są przepełnione na jednej sieci od ostatiego do pierwszego czyli odpłwy - dopływ
-        """
+        Returns rain sewers in which the maximum filling height has been exceeded.
 
-    
+        Args:
+            self: The instance of the class.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing conduits
+                        in which the maximum filling height has been exceeded.
+        """
+        return self.conduits_data.conduits[self.conduits_data.conduits["ValMaxFill"] == 0]
+
+    # def overflowing_traces(self) -> pd.DataFrame:
+    #     traces = self.all_traces()
+    #     print(traces)
+    #     print("\n")
+    #     overflowing = self.overflowing_pipes()
+    #     print(overflowing)
+    #     # overflowing_traces =
+    #     return traces
+
+    def overflowing_traces(self) -> pd.DataFrame:
+        traces = self.all_traces()
+        overflowing = self.overflowing_pipes()
+        overflowing_conduits = overflowing.index.tolist()
+
+        overflowing_traces = {}
+        for outfall, trace in traces.items():
+            overlapping_conduits = list(set(trace["conduits"]) & set(overflowing_conduits))
+            if overlapping_conduits:
+                start_index = trace["conduits"].index(overlapping_conduits[0])
+                end_index = trace["conduits"].index(overlapping_conduits[-1])
+                overflowing_trace = trace["conduits"][start_index : end_index + 1]
+                overflowing_traces[outfall] = {"conduits": overflowing_trace}
+
+        return overflowing_traces
+
     def place_pipes_to_apply_change(self) -> None:
         """
         Places pipes to apply a change in the SWMM model.
 
         1. Na podstawie listy przepełnionych kanałów określić
            gdzie należy zastosować rekomendowaną zmianę techniczną.
-        2. Zwrócić liste kanałów lub studzienek na których zastosować zmianę. 
+        2. Zwrócić liste kanałów lub studzienek na których zastosować zmianę.
         """
-    
+
     def generate_technical_recommendation(self) -> None:
         """
         Generates a technical recommendation in the SWMM model.
-        
+
         1. Użyj wytrenowanego ANN do generowania rekomendacji technicznej.
-        2. Przygotuj format danych w jakich bęziesz przechowywał rekomendację. 
+        2. Przygotuj format danych w jakich bęziesz przechowywał rekomendację.
         3. Zapisz dane do pliku.
-        4. Zwrócić użytkownikowi rekomendację. 
+        4. Zwrócić użytkownikowi rekomendację.
         """
 
     def optimize_conduit_slope(self) -> None:

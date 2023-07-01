@@ -13,14 +13,23 @@ np.set_printoptions(linewidth=desired_width)
 pd.set_option("display.max_columns", 30)
 
 
-model = sw.Model(TEST_FILE, include_rpt=True)
+def main():
+    model = sw.Model(TEST_FILE, include_rpt=True)
 
-with ps.Simulation(model.inp.path) as sim:
-    for _ in sim:
-        pass
+    with ps.Simulation(model.inp.path) as sim:
+        for _ in sim:
+            pass
 
-conduits_data, nodes_data, subcatchments_data = feature_engineering(model)
+    conduits_data, nodes_data, subcatchments_data = feature_engineering(model)
 
-o = SwmmModel(model, conduits_data, nodes_data, subcatchments_data)
-# print(o.find_all_traces())
-# pprint.pprint(o.find_all_traces())
+    swmm_model = SwmmModel(model, conduits_data, nodes_data, subcatchments_data)
+    # print(swmm_model.overflowing_traces())
+    # print(swmm_model.all_traces())
+    print(swmm_model.overflowing_traces())
+    # pprint.pprint(o.find_all_traces())
+
+    # print(model.inp)
+
+
+if __name__ == "__main__":
+    main()
