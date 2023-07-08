@@ -2,7 +2,7 @@ from typing import Tuple
 
 import swmmio
 
-from stormwater_analysis.data.data import ConduitsData, NodeData, SubcatchmentData
+from stormwater_analysis.data.data import ConduitsData, NodesData, SubcatchmentsData
 
 
 def perform_conduits_feature_engineering(model: swmmio.Model) -> ConduitsData:
@@ -34,18 +34,17 @@ def perform_conduits_feature_engineering(model: swmmio.Model) -> ConduitsData:
     conduits_data.calculate_conduit_filling()
     conduits_data.filling_is_valid()
     conduits_data.velocity_is_valid()
-    conduits_data.slope_per_mile()
     conduits_data.slopes_is_valid()
     conduits_data.max_depth()
+    conduits_data.slope_per_mile()
     conduits_data.calculate_max_depth()
     conduits_data.inlet_ground_cover()
     conduits_data.depth_is_valid()
     conduits_data.coverage_is_valid()
-    # print(conduits_data.conduits)
     return conduits_data
 
 
-def perform_nodes_feature_engineering(model: swmmio.Model) -> NodeData:
+def perform_nodes_feature_engineering(model: swmmio.Model) -> NodesData:
     """
     Performs feature engineering on the nodes data.
 
@@ -57,9 +56,9 @@ def perform_nodes_feature_engineering(model: swmmio.Model) -> NodeData:
         model (swmmio.Model): The SWMM model containing the data to be processed.
 
     Returns:
-        A NodeData object representing the nodes data after feature engineering steps have been applied.
+        A NodesData object representing the nodes data after feature engineering steps have been applied.
     """
-    nodes_data = NodeData(model)
+    nodes_data = NodesData(model)
     nodes_data.set_frost_zone("II")
     nodes_data.drop_unused()
     return nodes_data
@@ -67,7 +66,7 @@ def perform_nodes_feature_engineering(model: swmmio.Model) -> NodeData:
 
 def perform_subcatchments_feature_engineering(
     model: swmmio.Model,
-) -> SubcatchmentData:
+) -> SubcatchmentsData:
     """
     Performs feature engineering on the subcatchments data.
 
@@ -80,9 +79,9 @@ def perform_subcatchments_feature_engineering(
 
 
     Returns:
-        SubcatchmentData: An instance of the SubcatchmentData class after feature engineering.
+        SubcatchmentsData: An instance of the SubcatchmentsData class after feature engineering.
     """
-    subcatchments_data = SubcatchmentData(model)
+    subcatchments_data = SubcatchmentsData(model)
     subcatchments_data.set_frost_zone("II")
     subcatchments_data.drop_unused()
     subcatchments_data.classify(categories=True)
@@ -91,7 +90,7 @@ def perform_subcatchments_feature_engineering(
 
 def feature_engineering(
     model: swmmio.Model,
-) -> Tuple[ConduitsData, NodeData, SubcatchmentData]:
+) -> Tuple[ConduitsData, NodesData, SubcatchmentsData]:
     """
     Performs feature engineering on the SWMM model data.
 
@@ -103,7 +102,7 @@ def feature_engineering(
     Returns:
         tuple: A tuple containing three processed data objects: (conduits_data, nodes_data, subcatchments_data), where
             - conduits_data (ConduitsData): The processed conduits data after feature engineering.
-            - nodes_data (NodeData): The processed nodes data after feature engineering.
+            - nodes_data (NodesData): The processed nodes data after feature engineering.
             - subcatchments_data (SubcatchmentsData): The processed subcatchments data after feature engineering.
     """
     conduits_data = perform_conduits_feature_engineering(model)

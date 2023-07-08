@@ -1,7 +1,7 @@
-from stormwater_analysis.data.data import ConduitsData, NodeData, SubcatchmentData
+from stormwater_analysis.data.data import ConduitsData, NodesData, SubcatchmentsData
 
 __all__ = [
     "ConduitsData",
-    "NodeData",
-    "SubcatchmentData",
+    "NodesData",
+    "SubcatchmentsData",
 ]

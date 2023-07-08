@@ -54,6 +54,7 @@ class ConduitsData(Data):
         super().__init__(model)
         self.conduits = model.conduits().copy()
         self.frost_zone = None
+        self.conduits.set_index("Name", inplace=True)
 
     def set_frost_zone(self, frost_zone: str) -> None:
         """
@@ -221,7 +222,7 @@ class ConduitsData(Data):
         ).astype(int)
 
 
-class NodeData(Data):
+class NodesData(Data):
     def __init__(self, model: sw.Model) -> None:
         super().__init__(model)
         self.nodes = model.nodes.dataframe.copy()
@@ -229,7 +230,7 @@ class NodeData(Data):
 
     def set_frost_zone(self, frost_zone: str) -> None:
         """
-        Set the frost zone value for the NodeData instance.
+        Set the frost zone value for the NodesData instance.
 
         According to several standards (BN-83/8836-02, PN-81/B-03020, and others),
         the depth of the pipeline and tanks should be such that its cover from
@@ -281,7 +282,7 @@ class NodeData(Data):
     #     )
 
 
-class SubcatchmentData(Data):
+class SubcatchmentsData(Data):
     """
     Data class for subcatchments.
     """
@@ -293,7 +294,7 @@ class SubcatchmentData(Data):
 
     def set_frost_zone(self, frost_zone: str) -> None:
         """
-        Sets the frost zone value for the SubcatchmentData instance.
+        Sets the frost zone value for the SubcatchmentsData instance.
 
         Args:
             frost_zone (str): A string representing the frost zone category, e.g., "I", "II", "III", "IV".
