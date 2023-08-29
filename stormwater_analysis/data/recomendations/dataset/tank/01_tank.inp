@@ -54,9 +54,9 @@ Raingage2        INTENSITY 0:01     1.0      TIMESERIES test_series
 ;;Name           Rain Gage        Outlet           Area     %Imperv  Width    %Slope   CurbLen  SnowPack        
 ;;-------------- ---------------- ---------------- -------- -------- -------- -------- -------- ----------------
 S1               Raingage2        J0               1        15.0     500      10.0     0                        
-S2               Raingage2        J1               1        10.000000000000002 412.31056256176606 5.088435374149661 0                        
-S3               Raingage2        J2               1        15.000000000000004 346.41016151377545 5.088435374149661 0                        
-S4               Raingage2        J3               1        10.000000000000002 282.842712474619 5.088435374149661 0                        
+S2               Raingage2        J1               1        10.2     412.6    5.8      0                        
+S3               Raingage2        J2               1        15.4     346.5    5.8      0                        
+S4               Raingage2        J3               1        10.2     282.8    5.8      0                        
 S5               Raingage2        J9               1        25       500      8        0                        
 S6               Raingage2        J8               5        25       500      6        0                        
 S7               Raingage2        J4               5        25       500      12       0                        

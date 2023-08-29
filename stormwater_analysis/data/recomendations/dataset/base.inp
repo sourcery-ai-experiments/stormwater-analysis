@@ -167,8 +167,10 @@ LINKS ALL
 [TAGS]
 Node       J2               #P              
 Node       J3               #E              
-Link       C3               #P              
+Link       C3               valid           
 Link       C4               #E              
+Link       C2               diameter_increase
+Link       C1               valid           
 Link       C10              #E              
 
 [MAP]
