@@ -25,7 +25,7 @@ def main():
     swmm_model = SwmmModel(model, conduits_data, nodes_data, subcatchments_data)
     # print(swmm_model.overflowing_traces())
     # print(swmm_model.all_traces())
-    # print(swmm_model.overflowing_traces())
+    print(swmm_model.overflowing_traces())
     # pprint.pprint(o.find_all_traces())
 
     # print(model.inp)
