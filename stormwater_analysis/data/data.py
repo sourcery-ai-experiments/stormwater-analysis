@@ -45,6 +45,63 @@ class Data(ABC):
         pass
 
 
+class SubcatchmentsData(Data):
+    """
+    Data class for subcatchments.
+    """
+
+    def __init__(self, model: sw.Model) -> None:
+        super().__init__(model)
+        self.subcatchments = model.subcatchments.dataframe.copy()
+        self.frost_zone = None
+
+    def set_frost_zone(self, frost_zone: str) -> None:
+        """
+        Sets the frost zone value for the SubcatchmentsData instance.
+
+        Args:
+            frost_zone (str): A string representing the frost zone category, e.g., "I", "II", "III", "IV".
+        """
+        categories = {
+            "I": 1,
+            "II": 1.2,
+            "III": 1.4,
+            "IV": 1.6,
+        }
+        self.frost_zone = categories.get(frost_zone.upper(), 1.2)  # type: ignore
+
+    def drop_unused(self) -> None:
+        """
+        Drops unused columns from the subcatchments dataframe.
+        """
+        self.subcatchments = self.subcatchments.drop(
+            columns=[
+                #
+            ]
+        )
+
+    def classify(self, categories: bool = True) -> None:
+        df = self.subcatchments[
+            ["Area", "PercImperv", "Width", "PercSlope", "PctZero", "TotalPrecip", "TotalRunoffMG", "PeakRunoff", "RunoffCoeff"]
+        ].copy()
+        df["TotalPrecip"] = pd.to_numeric(df["TotalPrecip"])
+        predictions = classifier.predict(df)
+        predictions_cls = predictions.argmax(axis=-1)
+        if categories:
+            categories = [
+                "compact_urban_development",
+                "urban",
+                "loose_urban_development",
+                "wooded_area",
+                "grassy",
+                "loose_soil",
+                "steep_area",
+            ]
+            self.subcatchments["category"] = [categories[i] for i in predictions_cls]
+        else:
+            self.subcatchments["category"] = predictions_cls
+
+
 class NodesData(Data):
     def __init__(self, model: sw.Model) -> None:
         super().__init__(model)
@@ -103,63 +160,6 @@ class NodesData(Data):
     #         self.nodes.loc[nan_rows, "Length"]
     #         * self.nodes.loc[nan_rows, "SlopeFtPerFt"]
     #     )
-
-
-class SubcatchmentsData(Data):
-    """
-    Data class for subcatchments.
-    """
-
-    def __init__(self, model: sw.Model) -> None:
-        super().__init__(model)
-        self.subcatchments = model.subcatchments.dataframe.copy()
-        self.frost_zone = None
-
-    def set_frost_zone(self, frost_zone: str) -> None:
-        """
-        Sets the frost zone value for the SubcatchmentsData instance.
-
-        Args:
-            frost_zone (str): A string representing the frost zone category, e.g., "I", "II", "III", "IV".
-        """
-        categories = {
-            "I": 1,
-            "II": 1.2,
-            "III": 1.4,
-            "IV": 1.6,
-        }
-        self.frost_zone = categories.get(frost_zone.upper(), 1.2)  # type: ignore
-
-    def drop_unused(self) -> None:
-        """
-        Drops unused columns from the subcatchments dataframe.
-        """
-        self.subcatchments = self.subcatchments.drop(
-            columns=[
-                #
-            ]
-        )
-
-    def classify(self, categories: bool = True) -> None:
-        df = self.subcatchments[
-            ["Area", "PercImperv", "Width", "PercSlope", "PctZero", "TotalPrecip", "TotalRunoffMG", "PeakRunoff", "RunoffCoeff"]
-        ].copy()
-        df["TotalPrecip"] = pd.to_numeric(df["TotalPrecip"])
-        predictions = classifier.predict(df)
-        predictions_cls = predictions.argmax(axis=-1)
-        if categories:
-            categories = [
-                "compact_urban_development",
-                "urban",
-                "loose_urban_development",
-                "wooded_area",
-                "grassy",
-                "loose_soil",
-                "steep_area",
-            ]
-            self.subcatchments["category"] = [categories[i] for i in predictions_cls]
-        else:
-            self.subcatchments["category"] = predictions_cls
 
 
 class ConduitsData(Data):
