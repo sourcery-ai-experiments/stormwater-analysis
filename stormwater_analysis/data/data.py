@@ -138,8 +138,22 @@ class NodesData(Data):
                 #
             ]
         )
+    
+    # TODO
+    # def subcatchment_name(self):
+    #     pass
 
-    # TODO calculate MAxDepth for outlets
+    def subcatchment_name(self):
+        # Map the 'Outlet' column in subcatchments_df to 'Name' in nodes_df to get the subcatchment name
+        self.nodes['subcatchment'] = self.nodes['Name'].map(self.model.subcatchments['Outlet'])
+
+        # self.conduits["OutletMaxDepth"] = self.conduits["OutletNode"].map(self.model.nodes.dataframe["MaxDepth"])
+
+    # TODO
+    def category(self):
+        pass
+
+    #  calculate MAxDepth for outlets
     # def max_depth(self):
     #     self.nodes["MaxDepth"] = self.conduits["InletNode"].map(
     #         self.model.nodes.dataframe["MaxDepth"]
@@ -214,6 +228,22 @@ class ConduitsData(Data):
                 "Geom4",
             ]
         )
+
+    def drop_unsued(self) -> None:
+        """
+        Drop unused columns from the conduits dataframe.
+        """
+        self.conduits = self.conduits.drop(
+            columns = [
+                "OutOffest"
+            ]
+        )
+
+
+
+
+
+
 
     def calculate_conduit_filling(self) -> None:
         """
