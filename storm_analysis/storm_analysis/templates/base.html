@@ -44,7 +44,11 @@
         body {
             display: flex;
             flex-direction: column;
-        }
+            background-color: whitesmoke;
+            border-bottom: 0px solid black;
+            justify-content:center;
+          }
+
         .content-wrapper {
             flex: 1;
             display: flex;
@@ -54,8 +58,14 @@
         .profile-image {
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid white;
+            display: inline-block;
+            overflow: hidden;
+            line-height: 0;
+            width: 50px;
+            height: 50px;
         }
+
+
     </style>
 
 
