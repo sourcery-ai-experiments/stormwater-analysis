@@ -255,7 +255,7 @@ class DataManager(sw.Model):
 
     def feature_engineering(self):
         # self.subcatchments_name_to_node()
-        # self.subcatchments_classify()
+        self.subcatchments_classify()
         self.nodes_subcatchment_name()
         self.conduits_calculate_conduit_filling()
         self.conduits_filling_is_valid()
