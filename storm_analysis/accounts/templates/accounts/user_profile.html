@@ -28,14 +28,14 @@
             <div class="col-sm-8">
                 <div class="tab-content">
 
-                    <div class="accordion" id="accordionExample">
+                    <div class="accordion" id="accordionMenu">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingOne">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     <strong>Requiered User Informations Management</strong>
                                 </button>
                             </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionMenu">
                                 <div class="accordion-body">
                                     <form class="form" action="{% url 'accounts:user_profile' %}" method="POST" id="registrationForm" enctype="multipart/form-data">
                                         {% csrf_token %}
@@ -60,7 +60,7 @@
                                 <strong>Password Management</strong>
                             </button>
                             </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionMenu">
                             <div class="accordion-body">
                                 <form class="form" action="{% url 'accounts:user_profile' %}" method="POST" id="registrationForm" enctype="multipart/form-data">
                                     {% csrf_token %}
@@ -83,7 +83,7 @@
                                     <strong>Additional Informations Management</strong>
                                 </button>
                             </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionMenu">
                                 <div class="accordion-body">
                                     <form class="form" action="{% url 'accounts:user_profile' %}" method="POST" id="registrationForm" enctype="multipart/form-data">
                                         {% csrf_token %}

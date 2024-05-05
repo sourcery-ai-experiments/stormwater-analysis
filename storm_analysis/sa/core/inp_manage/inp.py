@@ -1,8 +1,7 @@
 from typing import Dict, List
 
 import pandas as pd
-import swmmio
-from sa.core.data.data import ConduitsData, NodesData, SubcatchmentsData
+from sa.core.data.data import DataManager
 from sa.core.pipes.round import min_slope
 from swmmio.utils.functions import trace_from_node
 
@@ -10,20 +9,11 @@ from swmmio.utils.functions import trace_from_node
 class SwmmModel:
     """
     A class representing a Storm Water Management Model (SWMM) with processed data.
-
-    Attributes:
-        model (swmmio.Model): The original SWMM model.
-        conduits_data (ConduitsData): The processed conduits data after feature engineering.
-        nodes_data (NodesData): The processed nodes data after feature engineering.
-        subcatchments_data (SubcatchmentsData): The processed subcatchments data after feature engineering.
     """
 
     def __init__(
         self,
-        model: swmmio.Model,
-        conduits_data: ConduitsData,
-        nodes_data: NodesData,
-        subcatchments_data: SubcatchmentsData,
+        model: DataManager,
     ) -> None:
         """
         Initializes a SwmmModel object with the given SWMM model and processed data.
@@ -35,9 +25,6 @@ class SwmmModel:
             subcatchments_data (SubcatchmentsData): The processed subcatchments data after feature engineering.
         """
         self.model = model
-        self.conduits_data = conduits_data
-        self.nodes_data = nodes_data
-        self.subcatchments_data = subcatchments_data
 
     def all_traces(self) -> Dict[str, List[str]]:
         """
@@ -50,7 +37,7 @@ class SwmmModel:
             of conduit IDs representing the traces connecting the outfalls to the rest of the network.
         """
         outfalls = self.model.inp.outfalls.index
-        return {outfall: trace_from_node(self.conduits_data.conduits, outfall) for outfall in outfalls}
+        return {outfall: trace_from_node(self.model.conduits, outfall) for outfall in outfalls}
 
     def overflowing_pipes(self) -> pd.DataFrame:
         """
@@ -195,9 +182,9 @@ class SwmmModel:
         # TODO: min_slope() returns a minimal slope as number/1000,  SlopeFtPerFt is a number.
         #       So we need to convert it to number/1000.
         #       SlopePerMile take number/1000, so there is no need to convert it to number/1000.
-        self.conduits_data.conduits.SlopeFtPerFt = min_slope(
-            filling=self.conduits_data.conduits.Filling,
-            diameter=self.conduits_data.conduits.Geom1,
+        self.model.conduits.SlopeFtPerFt = min_slope(
+            filling=self.model.conduits.Filling,
+            diameter=self.model.conduits.Geom1,
         )
 
     def optimize_conduit_depth(self):  # type: ignore
