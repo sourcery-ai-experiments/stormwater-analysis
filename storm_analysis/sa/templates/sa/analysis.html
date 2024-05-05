@@ -21,7 +21,7 @@
             </div>
         </div>
     </form>
-{% endif %}
+{% else %}
 
 <div class="container">
     <div class="row">
@@ -31,27 +31,45 @@
     </div>
 </div>
 
-{% if data %}
-<div class="container mt-3">
-    <div class="table-container">
-        <table class="table">
-            <thead>
-                <tr>
-                    {% for key in data.0.keys %}
-                        <th class="center-text">{{ key }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in data %}
-                    <tr>
-                        {% for value in item.values %}
-                            <td class="center-text">{{ value }}</td>
-                        {% endfor %}
-                    </tr>
+<div class="container bootstrap snippet mt-3">
+    <div class="row">
+        <div class="tab-content">
+            <div class="accordion" id="accordionMenu">
+
+                {% for dataset_name, dataset in data.items %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ dataset_name|slugify }}">
+                        <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ dataset_name|slugify }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ dataset_name|slugify }}">
+                            <strong>{{ dataset_name }}</strong>
+                        </button>
+                    </h2>
+                    <div id="collapse{{ dataset_name|slugify }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ dataset_name|slugify }}" data-bs-parent="#dataAccordion">
+                        <div class="accordion-body scrollable-accordion-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        {% for key in dataset.0.keys %}
+                                        <th class="center-text">{{ key }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in dataset %}
+                                    <tr>
+                                        {% for value in item.values %}
+                                        <td class="center-text">{{ value }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 {% endfor %}
-            </tbody>
-        </table>
+                
+            </div>
+        </div>
     </div>
 </div>
 {% endif %}

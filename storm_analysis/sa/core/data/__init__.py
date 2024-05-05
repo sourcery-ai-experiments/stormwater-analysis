@@ -1,7 +1,5 @@
-from sa.core.data.data import ConduitsData, NodesData, SubcatchmentsData
+from sa.core.data.data import DataManager
 
 __all__ = [
-    "ConduitsData",
-    "NodesData",
-    "SubcatchmentsData",
+    "DataManager",
 ]
