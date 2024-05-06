@@ -20,7 +20,7 @@ def register(request):
     return render(request, "registration/register.html", {"form": form})
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/accounts/login/")
 def user_profile(request):
     user_form = UserForm(instance=request.user)
     profile_form = UserProfileForm(instance=request.user)
@@ -73,7 +73,7 @@ def user_profile(request):
     return render(request, "accounts/user_profile.html", context)
 
 
-@login_required(login_url="/login")
+@login_required(login_url="/accounts/login/")
 def profile(request, id):
     user = request.user
     context = {"user": user}

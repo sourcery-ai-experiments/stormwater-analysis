@@ -74,14 +74,13 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            border: 1px solid #dee2e6;
         }
-<<<<<<< Updated upstream
-    
-=======
         .table th, .table td {
-            border-right: 1px solid #dee2e6;
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            white-space: nowrap;
         }
->>>>>>> Stashed changes
         thead th {
             position: sticky;
             top: 0;
@@ -106,10 +105,17 @@
             position: sticky;
             top: 0;
             background-color: #f9f9f9;
-            z-index: 1;
+            z-index: 2;
+        }
+        .table-container thead {
+            z-index: 2;
+            background-color: #f9f9f9;
         }
         .center-text {
             text-align: center;
+        }
+        .scrollable-accordion-body {
+            overflow-x: auto;
         }
     </style>
 
